@@ -272,7 +272,8 @@
             </div>
           </div>
 
-          <div class="table-wrap scroll-table">
+          <!-- Desktop Table View -->
+          <div class="table-wrap scroll-table desktop-view">
             <table>
               <thead>
               <tr>
@@ -288,6 +289,9 @@
               <tbody id="transactionList"></tbody>
             </table>
           </div>
+
+          <!-- Mobile Card View -->
+          <div id="mobileTransactionList" class="mobile-transaction-list mobile-view"></div>
         </section>
 <!-- TRASH BIN -->
 <section id="trashbin" class="card glass">
@@ -304,7 +308,7 @@
     </div>
   </div>
 
-  <div class="table-wrap scroll-table">
+  <div class="table-wrap scroll-table desktop-view">
     <table>
       <thead>
         <tr>
@@ -318,6 +322,9 @@
       <tbody id="trashList"></tbody>
     </table>
   </div>
+
+  <!-- Mobile Trash Cards -->
+  <div id="mobileTrashList" class="mobile-transaction-list mobile-view"></div>
   
   <div id="trashEmpty" style="text-align: center; padding: 40px; color: var(--muted); display: none;">
     <div style="font-size: 48px; margin-bottom: 16px;">🗑️</div>
