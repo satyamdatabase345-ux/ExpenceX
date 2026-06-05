@@ -876,12 +876,12 @@ function renderTransactionTable() {
     return matchedType && matchedSearch;
   });
 
+  // ========== DESKTOP TABLE RENDERING ==========
   transactionList.innerHTML = "";
 
   filtered.forEach(t => {
     transactionList.innerHTML += `
       <tr>
-       <tr>
   <td>
     ${
     t.billUrl 
@@ -916,6 +916,46 @@ function renderTransactionTable() {
         <td colspan="7" style="text-align:center; color:var(--muted);">No transactions found</td>
       </tr>
     `;
+  }
+
+  // ========== MOBILE CARD RENDERING ==========
+  const mobileTransactionList = document.getElementById("mobileTransactionList");
+  if (mobileTransactionList) {
+    mobileTransactionList.innerHTML = "";
+
+    if (filtered.length === 0) {
+      mobileTransactionList.innerHTML = `
+        <div style="text-align: center; color: var(--muted); padding: 20px; font-size: 14px;">
+          No transactions found
+        </div>
+      `;
+    } else {
+      filtered.forEach(t => {
+        const badgeClass = t.type === "income" ? "transaction-income" : "transaction-expense";
+        const amountSign = t.type === "income" ? "+" : "-";
+        const photoUrl = t.billUrl || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+        
+        mobileTransactionList.innerHTML += `
+          <div class="transaction-item">
+            <div class="transaction-left">
+              <img src="${photoUrl}" class="transaction-avatar" alt="Transaction" />
+              <div class="transaction-info">
+                <h4>${t.category}</h4>
+                <p>${t.note || "No note"}</p>
+              </div>
+            </div>
+            <div class="transaction-right">
+              <div class="${badgeClass}">${amountSign}${formatCurrency(t.amount)}</div>
+              <div class="transaction-date">${t.date}</div>
+              <div style="margin-top: 8px; display: flex; gap: 6px; justify-content: flex-end;">
+                <button class="edit-btn" onclick="editTransaction(${t.id})" style="font-size: 12px; padding: 4px 8px;">Edit</button>
+                <button class="delete-btn" onclick="deleteTransaction(${t.id})" style="font-size: 12px; padding: 4px 8px;">Delete</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
   }
 }
 
@@ -1812,10 +1852,12 @@ function cleanOldTrash() {
 
 function renderTrash() {
   const trashList = document.getElementById("trashList");
+  const mobileTrashList = document.getElementById("mobileTrashList");
   const trashEmpty = document.getElementById("trashEmpty");
 
   if (!trashList) return;
   trashList.innerHTML = "";
+  if (mobileTrashList) mobileTrashList.innerHTML = "";
 
   // Update header count
   const trashHeading = document.querySelector("#trashbin h3");
@@ -1834,6 +1876,7 @@ function renderTrash() {
     trashEmpty.style.display = "none";
   }
 
+  // ========== DESKTOP TABLE RENDERING ==========
   filtered.forEach((item) => {
     const index = trash.indexOf(item);
     const label = item.data.note || item.data.name || item.data.place || item.data.desc || "-";
@@ -1850,6 +1893,41 @@ function renderTrash() {
       </tr>
     `;
   });
+
+  // ========== MOBILE CARD RENDERING ==========
+  if (mobileTrashList) {
+    filtered.forEach((item) => {
+      const index = trash.indexOf(item);
+      const label = item.data.note || item.data.name || item.data.place || item.data.desc || "-";
+      const amount = item.data.amount || 0;
+      const deletedDate = new Date(item.deletedAt).toLocaleDateString();
+      const badgeClass = item.type === 'transaction' ? `type-${item.data.type}` : 'type-expense';
+      
+      mobileTrashList.innerHTML += `
+        <div class="transaction-item">
+          <div class="transaction-left">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ff3b3b, #ff8c42); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; flex-shrink: 0;">
+              🗑️
+            </div>
+            <div class="transaction-info">
+              <h4>${label}</h4>
+              <p>${item.type} • ${deletedDate}</p>
+            </div>
+          </div>
+          <div class="transaction-right">
+            <div style="color: #ff3b3b; font-weight: 700; font-size: 16px; margin-bottom: 4px;">
+              ${formatCurrency(amount)}
+            </div>
+            <div class="transaction-date">${item.type}</div>
+            <div style="margin-top: 8px; display: flex; gap: 6px; justify-content: flex-end;">
+              <button class="edit-btn" onclick="restoreItem(${index})" style="font-size: 12px; padding: 4px 8px;">Restore</button>
+              <button class="delete-btn" onclick="deleteForever(${index})" style="font-size: 12px; padding: 4px 8px;">Delete</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
 }
 
 function restoreItem(index) {
