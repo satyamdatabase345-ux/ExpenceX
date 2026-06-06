@@ -1300,6 +1300,8 @@ function renderTripExpenseTable() {
 
   const filter = document.getElementById("tripFilterFriend").value;
   const friendTotals = document.getElementById("friendTotals");
+  const tripExpenseTotal = document.getElementById("tripExpenseTotal");
+  const tripTransactionCount = document.getElementById("tripTransactionCount");
 
   let filteredExpenses = tripExpenses;
 
@@ -1309,6 +1311,7 @@ function renderTripExpenseTable() {
 
   // CALCULATE TOTALS
   let totalSpent = filteredExpenses.reduce((sum, t) => sum + t.amount, 0);
+  let totalAllExpenses = tripExpenses.reduce((sum, t) => sum + t.amount, 0);
 
   let totalContribution = 0;
   if (filter !== "all") {
@@ -1327,19 +1330,59 @@ function renderTripExpenseTable() {
     friendTotals.innerHTML = "";
   }
 
+  // Update summary card
+  if (tripExpenseTotal) {
+    tripExpenseTotal.innerHTML = `₹${totalAllExpenses.toFixed(2)}`;
+  }
+  if (tripTransactionCount) {
+    tripTransactionCount.innerHTML = `${tripExpenses.length} Transactions`;
+  }
+
   // TABLE RENDER
   tripExpenseList.innerHTML = "";
 
+  // Category emoji map
+  const categoryIcons = {
+    'food': '🍽️',
+    'travel': '✈️',
+    'hotel': '🏨',
+    'shopping': '🛍️',
+    'entertainment': '🎭',
+    'fuel': '⛽',
+    'petrol': '⛽',
+    'cash': '💳',
+    'card': '💳',
+    'other': '📌'
+  };
+
   filteredExpenses.forEach(t => {
+    const categoryKey = t.place?.toLowerCase() || 'other';
+    const categoryIcon = categoryIcons[categoryKey] || '📌';
+    const firstLetter = t.name.charAt(0).toUpperCase();
+    
     tripExpenseList.innerHTML += `
       <tr>
-        <td>${t.name}</td>
-        <td>${formatCurrency(t.amount)}</td>
-        <td>${t.place}</td>
+        <td>
+          <div class="trip-user">
+            <div class="trip-avatar">
+              ${firstLetter}
+            </div>
+            <span>${t.name}</span>
+          </div>
+        </td>
+        <td>
+          <span class="trip-amount">₹${t.amount.toFixed(2)}</span>
+        </td>
+        <td>
+          <div class="trip-category">
+            <span>${categoryIcon}</span>
+            <span>${t.place || 'Other'}</span>
+          </div>
+        </td>
         <td>${t.date}</td>
         <td>${t.desc || "-"}</td>
         <td>
-          <button class="delete-btn" onclick="deleteTripExpense(${t.id})">Delete</button>
+          <span class="trip-action" onclick="deleteTripExpense(${t.id})" title="Delete">⋮</span>
         </td>
       </tr>
     `;
@@ -1348,8 +1391,8 @@ function renderTripExpenseTable() {
   if (filteredExpenses.length === 0) {
     tripExpenseList.innerHTML = `
       <tr>
-        <td colspan="6" style="text-align:center; color:var(--muted);">
-          No data found
+        <td colspan="6" style="text-align:center; color:var(--muted); padding: 40px 20px;">
+          No expenses found
         </td>
       </tr>
     `;
