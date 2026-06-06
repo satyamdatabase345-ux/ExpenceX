@@ -442,35 +442,89 @@
             </div>
           </section>
 
-          <section class="grid-2">
-            <div class="card glass">
-              <div class="card-head">
-                <h3>Trip Expense History</h3>
+          <section class="full-width-section">
+            <div class="trip-history-header">
+              <div>
+                <h2>TRIP EXPENSE HISTORY</h2>
+                <p>Track and manage all your trip expenses</p>
               </div>
 
+              <button class="primary-btn">
+                ➕ Add Expense
+              </button>
+            </div>
+
+            <div class="trip-filters">
+
               <select id="tripFilterFriend">
-                <option value="all">All Friends</option>
+                <option value="all">👥 All Friends</option>
               </select>
 
-              <p id="friendTotals"></p>
+              <input
+                type="month"
+                id="tripMonthFilter"
+              />
 
-              <div class="table-wrap scroll-table">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Spent By</th>
-                      <th>Amount</th>
-                      <th>Where</th>
-                      <th>Date</th>
-                      <th>Description</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tripExpenseList"></tbody>
-                </table>
+            </div>
+
+            <p id="friendTotals"></p>
+
+            <div class="table-wrap scroll-table modern-trip-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>SPENT BY</th>
+                    <th>AMOUNT</th>
+                    <th>WHERE</th>
+                    <th>DATE</th>
+                    <th>DESCRIPTION</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tripExpenseList"></tbody>
+              </table>
+            </div>
+
+            <div class="trip-summary-card">
+              <div>
+                <h3>Total Expenses</h3>
+                <p id="tripTransactionCount">0 Transactions</p>
+              </div>
+
+              <div class="total" id="tripExpenseTotal">
+                ₹0
               </div>
             </div>
 
+            <!-- Pagination -->
+            <div class="pagination-section">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--muted); font-size: 14px;">Rows per page:</span>
+                <select id="rowsPerPage" style="width: 80px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="pagination-btn" onclick="previousPage()" style="width: 40px; height: 40px;">‹</button>
+                <span id="pageNumber" style="color: var(--text); font-weight: 600; min-width: 40px; text-align: center;">1</span>
+                <button class="pagination-btn" onclick="nextPage()" style="width: 40px; height: 40px;">›</button>
+              </div>
+
+              <div style="color: var(--muted); font-size: 14px;">
+                <span id="pageInfo">1-10 of 0</span>
+              </div>
+
+              <button style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--text); padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: var(--transition);" onclick="refreshTable()">
+                🔄
+              </button>
+            </div>
+          </section>
+
+          <!-- Friend Summary & Settlement Section -->
+          <section class="grid-2">
             <div class="card glass">
               <div class="card-head">
                 <h3>Friend Summary & Settlement</h3>
